@@ -1,0 +1,281 @@
+import java.math.BigInteger;
+
+import java.util.Scanner;
+
+public class Main
+
+{
+
+public static void main(String[] args)
+
+{
+
+Scanner reader = new Scanner(System.in); // Reading from System.in
+
+System.out.print("Enter first rational number: ");
+
+String n1 = reader.nextLine(); // Scans the next token of the input
+
+String n11 = reader.nextLine(); // Scans the next token of the input
+
+// Create and initialize two rational number r1
+
+Rational r1 = new Rational(new BigInteger(n1), new BigInteger(n11));
+
+System.out.print("Enter second rational number: ");
+
+String n2 = reader.nextLine(); // Scans the next token of the input
+
+String n22 = reader.nextLine(); // Scans the next token of the input
+
+// Create and initialize two rational number r2
+
+Rational r2 = new Rational(new BigInteger(n2), new BigInteger(n22));
+
+//output
+
+System.out.println("Addition: "+r1 + " + " + r2 + " = " + r1.addition(r2));
+
+System.out.println("Subtraction: "+r1 + " - " + r2 + " = " + r1.subtraction(r2));
+
+System.out.println("Multiplication: "+r1 + " * " + r2 + " = " + r1.multiplication(r2));
+
+System.out.println("Division: "+r1 + " / " + r2 + " = " + r1.division(r2));
+
+System.out.println(r2 + " is " + r2.doubleValue());
+
+}
+
+}
+
+rational.java
+
+import java.math.*;
+
+public class Rational extends Number implements Comparable
+
+{
+
+// rat for numerator and denominator
+
+private BigInteger[] rat = new BigInteger[2];
+
+public Rational()
+
+{
+
+this(new BigInteger("0"), new BigInteger("1"));
+
+}
+
+public Rational(BigInteger num, BigInteger den)
+
+{
+
+BigInteger gcd = gcd(num, den);
+
+rat[0] = (den.compareTo(BigInteger.ZERO) > 0? BigInteger.ONE : new BigInteger("-1")).multiply(num.divide(gcd));
+
+rat[1] = den.divide(gcd);
+
+}
+
+//finding GCD of two numbers
+
+private static BigInteger gcd(BigInteger nn, BigInteger dd)
+
+{
+
+BigInteger n1 = nn;
+
+BigInteger n2 = dd;
+
+BigInteger gcd = BigInteger.ONE;
+
+for (BigInteger kk = BigInteger.ONE; kk.compareTo(n1) <= 0 && kk.compareTo(n2) <= 0; kk = kk.add(BigInteger.ONE))
+
+{
+
+if (n1.remainder(kk).compareTo(BigInteger.ZERO) == 0 && n2.remainder(kk).compareTo(BigInteger.ZERO) == 0)
+
+gcd = kk;
+
+}
+
+return gcd;
+
+}
+
+//return numerator
+
+public BigInteger getNum()
+
+{
+
+return rat[0];
+
+}
+
+//return denominator
+
+public BigInteger getDen()
+
+{
+
+return rat[1];
+
+}
+
+//additional of rational number to this rational
+
+public Rational addition(Rational secondRat)
+
+{
+
+BigInteger nn = (rat[0].multiply(secondRat.getDen())).add(rat[1].multiply(secondRat.getNum()));
+
+BigInteger dd = rat[1].multiply(secondRat.getDen());
+
+return new Rational(nn, dd);
+
+}
+
+//Subtraction of rational number from this rational
+
+public Rational subtraction(Rational secondRat)
+
+{
+
+BigInteger nn = (rat[0].multiply(secondRat.getDen())).subtract(rat[1].multiply(secondRat.getNum()));
+
+BigInteger dd = rat[1].multiply(secondRat.getDen());
+
+return new Rational(nn, dd);
+
+}
+
+//Mulitplication of rational number by this rational
+
+public Rational multiplication(Rational secondRat)
+
+{
+
+BigInteger nn = rat[0].multiply(secondRat.getNum());
+
+BigInteger dd = rat[1].multiply(secondRat.getDen());
+
+return new Rational(nn, dd);
+
+}
+
+//Division of rational number by this rational
+
+public Rational division(Rational secondRat)
+
+{
+
+BigInteger nn = rat[0].multiply(secondRat.getDen());
+
+BigInteger dd = rat[1].multiply(secondRat.getNum());
+
+return new Rational(nn, dd);
+
+}
+
+@Override
+
+public String toString()
+
+{
+
+if (rat[1].compareTo(BigInteger.ONE) == 0)
+
+return rat[0] + "";
+
+else
+
+return rat[0] + "/" + rat[1];
+
+}
+
+@Override
+
+public boolean equals(Object other)
+
+{
+
+if (((this.subtraction((Rational)(other))).getNum()).compareTo(BigInteger.ZERO) == 0)
+
+return true;
+
+else
+
+return false;
+
+}
+
+@Override
+
+public int intValue()
+
+{
+
+return (int)doubleValue();
+
+}
+
+@Override
+
+public float floatValue()
+
+{
+
+return (float)doubleValue();
+
+}
+
+@Override
+
+public double doubleValue()
+
+{
+
+return this.getNum().doubleValue() / this.getDen().doubleValue();
+
+}
+
+@Override
+
+public long longValue()
+
+{
+
+return (long)doubleValue();
+
+}
+
+@Override
+
+public int compareTo(Object o)
+
+{
+
+BigInteger zero = BigInteger.ZERO;
+
+BigInteger nn = this.subtraction((Rational)o).getNum();
+
+if (nn.compareTo(zero) > 0)
+
+return 1;
+
+else if (nn.compareTo(zero) < 0)
+
+return -1;
+
+else
+
+return 0;
+
+}
+
+}
